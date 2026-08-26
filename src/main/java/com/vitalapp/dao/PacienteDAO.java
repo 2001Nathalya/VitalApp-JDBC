@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +21,24 @@ public class PacienteDAO {
                    + "VALUES (?, ?, ?)";
 
         try (Connection conexion = ConexionBD.conectar();
-             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
-
+            PreparedStatement sentencia = conexion.prepareStatement(
+        sql,
+        Statement.RETURN_GENERATED_KEYS
+)) {
             sentencia.setInt(1, paciente.getIdUsuario());
             sentencia.setDate(2, Date.valueOf(paciente.getFechaNacimiento()));
             sentencia.setString(3, paciente.getSexo());
 
             sentencia.executeUpdate();
 
-            System.out.println("Paciente registrado correctamente.");
-            return true;
+try (ResultSet clavesGeneradas = sentencia.getGeneratedKeys()) {
+    if (clavesGeneradas.next()) {
+        paciente.setIdPaciente(clavesGeneradas.getInt(1));
+    }
+}
+
+System.out.println("Paciente registrado correctamente.");
+return true;
 
         } catch (SQLException e) {
             System.out.println("Error al registrar paciente.");
@@ -47,7 +56,10 @@ public class PacienteDAO {
                    + "FROM pacientes";
 
         try (Connection conexion = ConexionBD.conectar();
-             PreparedStatement sentencia = conexion.prepareStatement(sql);
+             PreparedStatement sentencia = conexion.prepareStatement(
+        sql,
+        java.sql.Statement.RETURN_GENERATED_KEYS
+);
              ResultSet resultado = sentencia.executeQuery()) {
 
             while (resultado.next()) {
