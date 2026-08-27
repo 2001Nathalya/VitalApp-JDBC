@@ -4,10 +4,10 @@ import com.vitalapp.conexion.ConexionBD;
 import com.vitalapp.modelo.Paciente;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,24 +21,24 @@ public class PacienteDAO {
                    + "VALUES (?, ?, ?)";
 
         try (Connection conexion = ConexionBD.conectar();
-            PreparedStatement sentencia = conexion.prepareStatement(
-        sql,
-        Statement.RETURN_GENERATED_KEYS
-)) {
+             PreparedStatement sentencia = conexion.prepareStatement(
+                     sql,
+                     Statement.RETURN_GENERATED_KEYS)) {
+
             sentencia.setInt(1, paciente.getIdUsuario());
             sentencia.setDate(2, Date.valueOf(paciente.getFechaNacimiento()));
             sentencia.setString(3, paciente.getSexo());
 
             sentencia.executeUpdate();
 
-try (ResultSet clavesGeneradas = sentencia.getGeneratedKeys()) {
-    if (clavesGeneradas.next()) {
-        paciente.setIdPaciente(clavesGeneradas.getInt(1));
-    }
-}
+            try (ResultSet clavesGeneradas = sentencia.getGeneratedKeys()) {
+                if (clavesGeneradas.next()) {
+                    paciente.setIdPaciente(clavesGeneradas.getInt(1));
+                }
+            }
 
-System.out.println("Paciente registrado correctamente.");
-return true;
+            System.out.println("Paciente registrado correctamente.");
+            return true;
 
         } catch (SQLException e) {
             System.out.println("Error al registrar paciente.");
@@ -56,10 +56,7 @@ return true;
                    + "FROM pacientes";
 
         try (Connection conexion = ConexionBD.conectar();
-             PreparedStatement sentencia = conexion.prepareStatement(
-        sql,
-        java.sql.Statement.RETURN_GENERATED_KEYS
-);
+             PreparedStatement sentencia = conexion.prepareStatement(sql);
              ResultSet resultado = sentencia.executeQuery()) {
 
             while (resultado.next()) {
@@ -104,10 +101,10 @@ return true;
             if (filasAfectadas > 0) {
                 System.out.println("Paciente actualizado correctamente.");
                 return true;
-            } else {
-                System.out.println("No se encontró el paciente.");
-                return false;
             }
+
+            System.out.println("No se encontró el paciente.");
+            return false;
 
         } catch (SQLException e) {
             System.out.println("Error al actualizar paciente.");
@@ -115,30 +112,31 @@ return true;
             return false;
         }
     }
+
     // ELIMINAR PACIENTE
-public boolean eliminar(int idPaciente) {
+    public boolean eliminar(int idPaciente) {
 
-    String sql = "DELETE FROM pacientes WHERE id_paciente = ?";
+        String sql = "DELETE FROM pacientes WHERE id_paciente = ?";
 
-    try (Connection conexion = ConexionBD.conectar();
-         PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+        try (Connection conexion = ConexionBD.conectar();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
 
-        sentencia.setInt(1, idPaciente);
+            sentencia.setInt(1, idPaciente);
 
-        int filasAfectadas = sentencia.executeUpdate();
+            int filasAfectadas = sentencia.executeUpdate();
 
-        if (filasAfectadas > 0) {
-            System.out.println("Paciente eliminado correctamente.");
-            return true;
-        } else {
+            if (filasAfectadas > 0) {
+                System.out.println("Paciente eliminado correctamente.");
+                return true;
+            }
+
             System.out.println("No se encontró el paciente.");
             return false;
-        }
 
-    } catch (SQLException e) {
-        System.out.println("Error al eliminar paciente.");
-        System.out.println("Detalle: " + e.getMessage());
-        return false;
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar paciente.");
+            System.out.println("Detalle: " + e.getMessage());
+            return false;
+        }
     }
-}
 }
