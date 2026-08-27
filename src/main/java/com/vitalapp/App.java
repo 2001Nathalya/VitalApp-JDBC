@@ -40,8 +40,18 @@ public class App {
         for (Paciente p : pacientes) {
             System.out.println(p);
         }
+        // 3. BUSCAR PACIENTE POR ID
+System.out.println("\n--- BUSCAR PACIENTE POR ID ---");
 
-        // 3. ACTUALIZAR
+Paciente pacienteEncontrado = pacienteDAO.buscarPorId(paciente.getIdPaciente());
+
+if (pacienteEncontrado != null) {
+    System.out.println(pacienteEncontrado);
+} else {
+    System.out.println("No se encontró el paciente.");
+}
+
+        // 4. ACTUALIZAR
         paciente.setSexo("Masculino");
 
         boolean actualizado = pacienteDAO.actualizar(paciente);
@@ -50,7 +60,7 @@ public class App {
             System.out.println("Prueba de actualización completada correctamente.");
         }
 
-        // 4. ELIMINAR
+        // 5. ELIMINAR
         boolean eliminado = pacienteDAO.eliminar(paciente.getIdPaciente());
 
         if (eliminado) {

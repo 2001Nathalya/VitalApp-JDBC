@@ -22,8 +22,7 @@ public class PacienteDAO {
 
         try (Connection conexion = ConexionBD.conectar();
              PreparedStatement sentencia = conexion.prepareStatement(
-                     sql,
-                     Statement.RETURN_GENERATED_KEYS)) {
+                     sql, Statement.RETURN_GENERATED_KEYS)) {
 
             sentencia.setInt(1, paciente.getIdUsuario());
             sentencia.setDate(2, Date.valueOf(paciente.getFechaNacimiento()));
@@ -79,6 +78,44 @@ public class PacienteDAO {
         }
 
         return pacientes;
+    }
+
+    // BUSCAR PACIENTE POR ID
+    public Paciente buscarPorId(int idPaciente) {
+
+        String sql = "SELECT id_paciente, id_usuario, fecha_nacimiento, sexo "
+                   + "FROM pacientes WHERE id_paciente = ?";
+
+        try (Connection conexion = ConexionBD.conectar();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, idPaciente);
+
+            try (ResultSet resultado = sentencia.executeQuery()) {
+
+                if (resultado.next()) {
+
+                    Paciente paciente = new Paciente();
+
+                    paciente.setIdPaciente(resultado.getInt("id_paciente"));
+                    paciente.setIdUsuario(resultado.getInt("id_usuario"));
+                    paciente.setFechaNacimiento(
+                            resultado.getDate("fecha_nacimiento").toLocalDate()
+                    );
+                    paciente.setSexo(resultado.getString("sexo"));
+
+                    System.out.println("Paciente encontrado correctamente.");
+                    return paciente;
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar paciente.");
+            System.out.println("Detalle: " + e.getMessage());
+        }
+
+        System.out.println("No se encontró el paciente.");
+        return null;
     }
 
     // ACTUALIZAR PACIENTE
