@@ -1,7 +1,7 @@
 package com.vitalapp;
 
-import com.vitalapp.dao.SignoVitalDAO;
-import com.vitalapp.modelo.SignoVital;
+import com.vitalapp.dao.AlertaDAO;
+import com.vitalapp.modelo.Alerta;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,71 +10,78 @@ public class App {
 
     public static void main(String[] args) {
 
-        SignoVitalDAO signoVitalDAO = new SignoVitalDAO();
+        AlertaDAO alertaDAO = new AlertaDAO();
 
-        System.out.println("=== PRUEBA CRUD SIGNOS VITALES ===");
+        System.out.println("=== PRUEBA CRUD ALERTAS VITALAPP ===");
 
         // 1. INSERTAR
-        SignoVital signoVital = new SignoVital(
+        Alerta alerta = new Alerta(
                 0,
                 1,
-                LocalDateTime.now(),
-                80,
-                18,
-                "120/80",
-                36.5,
-                98.0,
-                90.0
+                "Temperatura alta",
+                "Temperatura del paciente por encima del valor normal.",
+                LocalDateTime.now()
         );
 
-        boolean registrado = signoVitalDAO.insertar(signoVital);
+        boolean registrada = alertaDAO.insertar(alerta);
 
-        if (!registrado) {
-            System.out.println("No se pudo registrar el signo vital.");
+        if (!registrada) {
+            System.out.println("No se pudo registrar la alerta.");
             return;
         }
 
-        System.out.println("ID del signo vital registrado: "
-                + signoVital.getIdSigno());
+        System.out.println("ID de la alerta registrada: "
+                + alerta.getIdAlerta());
 
-        // 2. CONSULTAR
-        System.out.println("\n--- LISTA DE SIGNOS VITALES ---");
+        // 2. CONSULTAR / LISTAR
+        System.out.println("\n--- LISTA DE ALERTAS ---");
 
-        List<SignoVital> signosVitales = signoVitalDAO.listar();
+        List<Alerta> alertas = alertaDAO.listar();
 
-        for (SignoVital s : signosVitales) {
-            System.out.println(s);
+        for (Alerta a : alertas) {
+            System.out.println(a);
         }
 
-        // 3. ACTUALIZAR
-        System.out.println("\n--- ACTUALIZAR SIGNO VITAL ---");
+        // 3. BUSCAR POR ID
+        System.out.println("\n--- BUSCAR ALERTA POR ID ---");
 
-        signoVital.setFrecuenciaCardiaca(85);
-        signoVital.setTemperatura(37.0);
+        Alerta alertaEncontrada =
+                alertaDAO.buscarPorId(alerta.getIdAlerta());
 
-        boolean actualizado = signoVitalDAO.actualizar(signoVital);
+        if (alertaEncontrada != null) {
+            System.out.println(alertaEncontrada);
+        }
 
-        if (actualizado) {
+        // 4. ACTUALIZAR
+        System.out.println("\n--- ACTUALIZAR ALERTA ---");
+
+        alerta.setTipoAlerta("Frecuencia cardiaca alta");
+        alerta.setDescripcion(
+                "La frecuencia cardiaca del paciente requiere atención."
+        );
+
+        boolean actualizada = alertaDAO.actualizar(alerta);
+
+        if (actualizada) {
             System.out.println(
                     "Prueba de actualización completada correctamente."
             );
         }
 
-        // 4. ELIMINAR
-        System.out.println("\n--- ELIMINAR SIGNO VITAL ---");
+        // 5. ELIMINAR
+        System.out.println("\n--- ELIMINAR ALERTA ---");
 
-        boolean eliminado = signoVitalDAO.eliminar(
-                signoVital.getIdSigno()
-        );
+        boolean eliminada =
+                alertaDAO.eliminar(alerta.getIdAlerta());
 
-        if (eliminado) {
+        if (eliminada) {
             System.out.println(
                     "Prueba de eliminación completada correctamente."
             );
         } else {
-            System.out.println("No se pudo eliminar el signo vital.");
+            System.out.println("No se pudo eliminar la alerta.");
         }
 
-        System.out.println("\n=== PRUEBA CRUD FINALIZADA ===");
+        System.out.println("\n=== PRUEBA CRUD ALERTAS FINALIZADA ===");
     }
 }
