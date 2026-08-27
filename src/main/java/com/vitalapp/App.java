@@ -1,75 +1,80 @@
 package com.vitalapp;
 
-import com.vitalapp.dao.PacienteDAO;
-import com.vitalapp.modelo.Paciente;
+import com.vitalapp.dao.SignoVitalDAO;
+import com.vitalapp.modelo.SignoVital;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class App {
 
     public static void main(String[] args) {
 
-        PacienteDAO pacienteDAO = new PacienteDAO();
+        SignoVitalDAO signoVitalDAO = new SignoVitalDAO();
 
-        System.out.println("=== PRUEBA CRUD VITALAPP ===");
+        System.out.println("=== PRUEBA CRUD SIGNOS VITALES ===");
 
         // 1. INSERTAR
-        Paciente paciente = new Paciente(
+        SignoVital signoVital = new SignoVital(
                 0,
                 1,
-                LocalDate.of(2000, 5, 15),
-                "Femenino"
+                LocalDateTime.now(),
+                80,
+                18,
+                "120/80",
+                36.5,
+                98.0,
+                90.0
         );
 
-        boolean registrado = pacienteDAO.insertar(paciente);
+        boolean registrado = signoVitalDAO.insertar(signoVital);
 
         if (!registrado) {
-            System.out.println("No se pudo registrar el paciente.");
+            System.out.println("No se pudo registrar el signo vital.");
             return;
         }
 
-        System.out.println("ID del paciente registrado: "
-                + paciente.getIdPaciente());
+        System.out.println("ID del signo vital registrado: "
+                + signoVital.getIdSigno());
 
         // 2. CONSULTAR
-        System.out.println("\n--- LISTA DE PACIENTES ---");
+        System.out.println("\n--- LISTA DE SIGNOS VITALES ---");
 
-        List<Paciente> pacientes = pacienteDAO.listar();
+        List<SignoVital> signosVitales = signoVitalDAO.listar();
 
-        for (Paciente p : pacientes) {
-            System.out.println(p);
+        for (SignoVital s : signosVitales) {
+            System.out.println(s);
         }
-        // 3. BUSCAR PACIENTE POR ID
-System.out.println("\n--- BUSCAR PACIENTE POR ID ---");
 
-Paciente pacienteEncontrado = pacienteDAO.buscarPorId(paciente.getIdPaciente());
+        // 3. ACTUALIZAR
+        System.out.println("\n--- ACTUALIZAR SIGNO VITAL ---");
 
-if (pacienteEncontrado != null) {
-    System.out.println(pacienteEncontrado);
-} else {
-    System.out.println("No se encontró el paciente.");
-}
+        signoVital.setFrecuenciaCardiaca(85);
+        signoVital.setTemperatura(37.0);
 
-        // 4. ACTUALIZAR
-        paciente.setSexo("Masculino");
-
-        boolean actualizado = pacienteDAO.actualizar(paciente);
+        boolean actualizado = signoVitalDAO.actualizar(signoVital);
 
         if (actualizado) {
-            System.out.println("Prueba de actualización completada correctamente.");
+            System.out.println(
+                    "Prueba de actualización completada correctamente."
+            );
         }
 
-        // 5. ELIMINAR
-        boolean eliminado = pacienteDAO.eliminar(paciente.getIdPaciente());
+        // 4. ELIMINAR
+        System.out.println("\n--- ELIMINAR SIGNO VITAL ---");
+
+        boolean eliminado = signoVitalDAO.eliminar(
+                signoVital.getIdSigno()
+        );
 
         if (eliminado) {
-            System.out.println("Prueba de eliminación completada correctamente.");
+            System.out.println(
+                    "Prueba de eliminación completada correctamente."
+            );
         } else {
-            System.out.println("No se pudo eliminar el paciente.");
+            System.out.println("No se pudo eliminar el signo vital.");
         }
 
         System.out.println("\n=== PRUEBA CRUD FINALIZADA ===");
     }
 }
-
