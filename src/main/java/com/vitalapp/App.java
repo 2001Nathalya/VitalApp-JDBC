@@ -4,6 +4,9 @@ import com.vitalapp.dao.UsuarioDAO;
 import com.vitalapp.modelo.Usuario;
 import com.vitalapp.dao.MedicoDAO;
 import com.vitalapp.modelo.Medico;
+import com.vitalapp.dao.ReporteDAO;
+import com.vitalapp.modelo.Reporte;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
@@ -87,6 +90,82 @@ if (eliminadoMedico) {
 }
 
 System.out.println("\n=== PRUEBA CRUD MÉDICOS FINALIZADA ===");
+// =====================================================
+// PRUEBA CRUD REPORTES
+// =====================================================
+
+ReporteDAO reporteDAO = new ReporteDAO();
+
+System.out.println("\n=== PRUEBA CRUD REPORTES VITALAPP ===");
+
+// 1. INSERTAR
+Reporte reporte = new Reporte(
+        0,
+        1,
+        LocalDateTime.now(),
+        "Reporte de evolución del paciente generado correctamente."
+);
+
+boolean registradoReporte = reporteDAO.insertar(reporte);
+
+if (!registradoReporte) {
+    System.out.println("No se pudo registrar el reporte.");
+    return;
+}
+
+System.out.println("ID del reporte registrado: "
+        + reporte.getIdReporte());
+
+// 2. CONSULTAR
+System.out.println("\n--- LISTA DE REPORTES ---");
+
+List<Reporte> reportes = reporteDAO.listar();
+
+for (Reporte r : reportes) {
+    System.out.println(r);
+}
+
+// 3. BUSCAR POR ID
+System.out.println("\n--- BUSCAR REPORTE POR ID ---");
+
+Reporte reporteEncontrado =
+        reporteDAO.buscarPorId(reporte.getIdReporte());
+
+if (reporteEncontrado != null) {
+    System.out.println(reporteEncontrado);
+}
+
+// 4. ACTUALIZAR
+System.out.println("\n--- ACTUALIZAR REPORTE ---");
+
+reporte.setDescripcion(
+        "Reporte actualizado de evolución del paciente."
+);
+
+boolean actualizadoReporte =
+        reporteDAO.actualizar(reporte);
+
+if (actualizadoReporte) {
+    System.out.println(
+            "Prueba de actualización completada correctamente."
+    );
+}
+
+// 5. ELIMINAR
+System.out.println("\n--- ELIMINAR REPORTE ---");
+
+boolean eliminadoReporte =
+        reporteDAO.eliminar(reporte.getIdReporte());
+
+if (eliminadoReporte) {
+    System.out.println(
+            "Prueba de eliminación completada correctamente."
+    );
+} else {
+    System.out.println("No se pudo eliminar el reporte.");
+}
+
+System.out.println("\n=== PRUEBA CRUD REPORTES FINALIZADA ===");
 
         // 1. INSERTAR
         Usuario usuario = new Usuario(
