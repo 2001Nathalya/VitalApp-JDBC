@@ -1,87 +1,84 @@
 package com.vitalapp;
 
-import com.vitalapp.dao.AlertaDAO;
-import com.vitalapp.modelo.Alerta;
+import com.vitalapp.dao.UsuarioDAO;
+import com.vitalapp.modelo.Usuario;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class App {
 
     public static void main(String[] args) {
 
-        AlertaDAO alertaDAO = new AlertaDAO();
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
 
-        System.out.println("=== PRUEBA CRUD ALERTAS VITALAPP ===");
+        System.out.println("=== PRUEBA CRUD USUARIOS VITALAPP ===");
 
         // 1. INSERTAR
-        Alerta alerta = new Alerta(
+        Usuario usuario = new Usuario(
                 0,
-                1,
-                "Temperatura alta",
-                "Temperatura del paciente por encima del valor normal.",
-                LocalDateTime.now()
+                "Maria Lopez",
+                "maria.lopez@gmail.com",
+                "123456",
+                "Paciente"
         );
 
-        boolean registrada = alertaDAO.insertar(alerta);
+        boolean registrado = usuarioDAO.insertar(usuario);
 
-        if (!registrada) {
-            System.out.println("No se pudo registrar la alerta.");
+        if (!registrado) {
+            System.out.println("No se pudo registrar el usuario.");
             return;
         }
 
-        System.out.println("ID de la alerta registrada: "
-                + alerta.getIdAlerta());
+        System.out.println("ID del usuario registrado: "
+                + usuario.getIdUsuario());
 
-        // 2. CONSULTAR / LISTAR
-        System.out.println("\n--- LISTA DE ALERTAS ---");
+        // 2. CONSULTAR
+        System.out.println("\n--- LISTA DE USUARIOS ---");
 
-        List<Alerta> alertas = alertaDAO.listar();
+        List<Usuario> usuarios = usuarioDAO.listar();
 
-        for (Alerta a : alertas) {
-            System.out.println(a);
+        for (Usuario u : usuarios) {
+            System.out.println(u);
         }
 
         // 3. BUSCAR POR ID
-        System.out.println("\n--- BUSCAR ALERTA POR ID ---");
+        System.out.println("\n--- BUSCAR USUARIO POR ID ---");
 
-        Alerta alertaEncontrada =
-                alertaDAO.buscarPorId(alerta.getIdAlerta());
+        Usuario usuarioEncontrado =
+                usuarioDAO.buscarPorId(usuario.getIdUsuario());
 
-        if (alertaEncontrada != null) {
-            System.out.println(alertaEncontrada);
+        if (usuarioEncontrado != null) {
+            System.out.println(usuarioEncontrado);
         }
 
         // 4. ACTUALIZAR
-        System.out.println("\n--- ACTUALIZAR ALERTA ---");
+        System.out.println("\n--- ACTUALIZAR USUARIO ---");
 
-        alerta.setTipoAlerta("Frecuencia cardiaca alta");
-        alerta.setDescripcion(
-                "La frecuencia cardiaca del paciente requiere atención."
-        );
+        usuario.setNombre("Maria Lopez Actualizada");
+        usuario.setRol("Administrador");
 
-        boolean actualizada = alertaDAO.actualizar(alerta);
+        boolean actualizado = usuarioDAO.actualizar(usuario);
 
-        if (actualizada) {
+        if (actualizado) {
             System.out.println(
                     "Prueba de actualización completada correctamente."
             );
         }
 
         // 5. ELIMINAR
-        System.out.println("\n--- ELIMINAR ALERTA ---");
+        System.out.println("\n--- ELIMINAR USUARIO ---");
 
-        boolean eliminada =
-                alertaDAO.eliminar(alerta.getIdAlerta());
+        boolean eliminado =
+                usuarioDAO.eliminar(usuario.getIdUsuario());
 
-        if (eliminada) {
+        if (eliminado) {
             System.out.println(
                     "Prueba de eliminación completada correctamente."
             );
         } else {
-            System.out.println("No se pudo eliminar la alerta.");
+            System.out.println("No se pudo eliminar el usuario.");
         }
 
-        System.out.println("\n=== PRUEBA CRUD ALERTAS FINALIZADA ===");
+        System.out.println("\n=== PRUEBA CRUD USUARIOS FINALIZADA ===");
     }
 }
