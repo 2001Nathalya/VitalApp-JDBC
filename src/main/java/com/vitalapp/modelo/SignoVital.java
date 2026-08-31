@@ -1,6 +1,8 @@
 package com.vitalapp.modelo;
 
 import java.time.LocalDateTime;
+import com.vitalapp.dao.SignoVitalDAO;
+import com.vitalapp.modelo.SignoVital;
 
 public class SignoVital {
 

@@ -108,6 +108,69 @@ public class SignoVitalDAO {
 
         return signosVitales;
     }
+    // BUSCAR SIGNO VITAL POR ID
+    public SignoVital buscarPorId(int idSigno) {
+
+        String sql = "SELECT id_signo, id_paciente, fecha_registro, "
+                + "frecuencia_cardiaca, frecuencia_respiratoria, "
+                + "presion_arterial, temperatura, saturacion_oxigeno, glucemia "
+                + "FROM signos_vitales "
+                + "WHERE id_signo = ?";
+
+        try (Connection conexion = ConexionBD.conectar();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, idSigno);
+
+            try (ResultSet resultado = sentencia.executeQuery()) {
+
+                if (resultado.next()) {
+
+                    SignoVital signoVital = new SignoVital();
+
+                    signoVital.setIdSigno(
+                            resultado.getInt("id_signo"));
+
+                    signoVital.setIdPaciente(
+                            resultado.getInt("id_paciente"));
+
+                    signoVital.setFechaRegistro(
+                            resultado.getTimestamp("fecha_registro")
+                                    .toLocalDateTime());
+
+                    signoVital.setFrecuenciaCardiaca(
+                            resultado.getInt("frecuencia_cardiaca"));
+
+                    signoVital.setFrecuenciaRespiratoria(
+                            resultado.getInt("frecuencia_respiratoria"));
+
+                    signoVital.setPresionArterial(
+                            resultado.getString("presion_arterial"));
+
+                    signoVital.setTemperatura(
+                            resultado.getDouble("temperatura"));
+
+                    signoVital.setSaturacionOxigeno(
+                            resultado.getDouble("saturacion_oxigeno"));
+
+                    signoVital.setGlucemia(
+                            resultado.getDouble("glucemia"));
+
+                    System.out.println(
+                            "Signo vital encontrado correctamente.");
+
+                    return signoVital;
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar signo vital.");
+            System.out.println("Detalle: " + e.getMessage());
+        }
+
+        System.out.println("No se encontró el signo vital.");
+        return null;
+    }
 
     // ACTUALIZAR SIGNO VITAL
     public boolean actualizar(SignoVital signoVital) {
